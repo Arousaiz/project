@@ -7,6 +7,7 @@ import {
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { BaseUserDto } from 'src/user/dto/base_user.dto';
 
 @Injectable()
 export class AuthService {
@@ -15,11 +16,11 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async SignIn(username: string, password: string): Promise<any> {
+  async SignIn({ Username, Password }: BaseUserDto): Promise<any> {
     try {
-      const user = await this.userService.findOne(username);
+      const user = await this.userService.findOne(Username);
       if (user) {
-        const isMatch = await bcrypt.compare(password, user.HashedPassword);
+        const isMatch = await bcrypt.compare(Password, user.HashedPassword);
         if (!isMatch) {
           throw new HttpException('Wrong data', HttpStatus.BAD_REQUEST);
         }
@@ -37,19 +38,19 @@ export class AuthService {
     }
   }
 
-  async Register(username: string, password: string): Promise<any> {
+  async Register({ Username, Password }: BaseUserDto): Promise<any> {
     try {
-      const user = await this.userService.findOne(username);
+      const user = await this.userService.findOne(Username);
       if (user) {
         throw new HttpException(
           'Username already exists',
           HttpStatus.BAD_REQUEST,
         );
       }
-      const hash = await bcrypt.hash(password, 10);
+      const hash = await bcrypt.hash(Password, 10);
       const userToReturn = await this.userService.add({
-        Username: username,
-        HashedPassword: hash,
+        Username: Username,
+        Password: hash,
       });
       return userToReturn;
     } catch {
