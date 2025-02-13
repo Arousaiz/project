@@ -1,4 +1,4 @@
-export class BaseUserDto {
+export interface BaseUserDto {
   HashedPassword: string;
   Username: string;
 }

@@ -7,25 +7,32 @@ import {
   Request,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthGuard } from './auth_guard';
+import { AuthGuard } from '../shared/guards/auth_guard';
+import { BaseUserDto } from 'src/user/dto/base_user.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('login')
-  signIn(@Body() signInDto: Record<string, any>) {
-    return this.authService.SignIn(signInDto.username, signInDto.password);
+  signIn(@Body() signInDto: BaseUserDto) {
+    return this.authService.SignIn(
+      signInDto.Username,
+      signInDto.HashedPassword,
+    );
   }
 
   @Post('register')
-  signUp(@Body() signUpDto: Record<string, any>) {
-    return this.authService.Register(signUpDto.username, signUpDto.password);
+  signUp(@Body() signUpDto: BaseUserDto) {
+    return this.authService.Register(
+      signUpDto.Username,
+      signUpDto.HashedPassword,
+    );
   }
 
   @UseGuards(AuthGuard)
   @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
+  getProfile(@Request() req: Request): BaseUserDto {
+    return req['user'] as BaseUserDto;
   }
 }
