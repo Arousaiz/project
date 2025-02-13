@@ -15,19 +15,13 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('login')
-  signIn(@Body() signInDto: BaseUserDto) {
-    return this.authService.SignIn(
-      signInDto.Username,
-      signInDto.HashedPassword,
-    );
+  signIn(@Body() signInData: BaseUserDto) {
+    return this.authService.SignIn(signInData);
   }
 
   @Post('register')
-  signUp(@Body() signUpDto: BaseUserDto) {
-    return this.authService.Register(
-      signUpDto.Username,
-      signUpDto.HashedPassword,
-    );
+  signUp(@Body() signUpData: BaseUserDto) {
+    return this.authService.Register(signUpData);
   }
 
   @UseGuards(AuthGuard)
