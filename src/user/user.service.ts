@@ -13,6 +13,12 @@ export class UserService {
   ) {}
 
   async add(user: BaseUserDto): Promise<User> {
+    if (await this.findOne(user.Username)) {
+      throw new HttpException(
+        'Username already exists',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
     const data = this.usersRepository.create({
       Username: user.Username,
       HashedPassword: user.HashedPassword,
@@ -43,6 +49,22 @@ export class UserService {
       Username: user.Username,
       FirstName: user.FirstName,
       LastName: user.LastName,
+      HashedPassword: user.HashedPassword,
+    };
+    return await this.usersRepository.update(id, updatedUser);
+  }
+
+  async updateUsernameAndPassword(id: number, user: BaseUserDto): Promise<any> {
+    const data = await this.usersRepository.findOneBy({ id });
+    if (!data) {
+      throw new HttpException('Bad request', HttpStatus.BAD_REQUEST);
+    }
+    const updatedUser: User = {
+      id: id,
+      Email: data.Email,
+      Username: user.Username,
+      FirstName: data.FirstName,
+      LastName: data.LastName,
       HashedPassword: user.HashedPassword,
     };
     return await this.usersRepository.update(id, updatedUser);
