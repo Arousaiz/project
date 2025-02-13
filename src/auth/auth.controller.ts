@@ -32,7 +32,7 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Get('profile')
-  getProfile(@Request() req: Request): BaseUserDto {
-    return req['user'] as BaseUserDto;
+  getProfile(@Request() req: Request): Record<number, string> {
+    return req['user'] as Record<number, string>;
   }
 }
