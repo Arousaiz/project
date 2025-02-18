@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserDto } from './dto/user.dto';
 import { BaseUserDto } from './dto/base_user.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -43,13 +44,14 @@ export class UserService {
     if (!data) {
       throw new HttpException('Bad request', HttpStatus.BAD_REQUEST);
     }
+    const hash = await bcrypt.hash(user.Password, 10);
     const updatedUser: User = {
       id: id,
       Email: user.Email,
       Username: user.Username,
       FirstName: user.FirstName,
       LastName: user.LastName,
-      HashedPassword: user.Password,
+      HashedPassword: hash,
     };
     return await this.usersRepository.update(id, updatedUser);
   }
@@ -59,13 +61,14 @@ export class UserService {
     if (!data) {
       throw new HttpException('Bad request', HttpStatus.BAD_REQUEST);
     }
+    const hash = await bcrypt.hash(user.Password, 10);
     const updatedUser: User = {
       id: id,
       Email: data.Email,
       Username: user.Username,
       FirstName: data.FirstName,
       LastName: data.LastName,
-      HashedPassword: user.HashedPassword,
+      HashedPassword: hash,
     };
     return await this.usersRepository.update(id, updatedUser);
   }
