@@ -1,4 +1,4 @@
 export interface BaseUserDto {
-  HashedPassword: string;
+  Password: string;
   Username: string;
 }

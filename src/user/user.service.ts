@@ -21,7 +21,7 @@ export class UserService {
     }
     const data = this.usersRepository.create({
       Username: user.Username,
-      HashedPassword: user.HashedPassword,
+      HashedPassword: user.Password,
     });
     return await this.usersRepository.save(data);
   }
@@ -49,7 +49,7 @@ export class UserService {
       Username: user.Username,
       FirstName: user.FirstName,
       LastName: user.LastName,
-      HashedPassword: user.HashedPassword,
+      HashedPassword: user.Password,
     };
     return await this.usersRepository.update(id, updatedUser);
   }
