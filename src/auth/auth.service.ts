@@ -21,14 +21,14 @@ export class AuthService {
       if (user) {
         const isMatch = await bcrypt.compare(password, user.HashedPassword);
         if (!isMatch) {
-          throw new HttpException('Wrong data', HttpStatus.BAD_REQUEST);
+          throw new HttpException('Password is wrong', HttpStatus.BAD_REQUEST);
         }
         const payload = { sub: user.id, username: user.Username };
         return {
           access_token: await this.jwtService.signAsync(payload),
         };
       } else {
-        throw new HttpException('Wrong data', HttpStatus.BAD_REQUEST);
+        throw new HttpException('User is not found', HttpStatus.BAD_REQUEST);
       }
     } catch {
       throw new InternalServerErrorException(
